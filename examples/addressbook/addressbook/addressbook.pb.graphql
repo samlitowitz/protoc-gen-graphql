@@ -1,0 +1,24 @@
+enum PersonPhoneType {
+  MOBILE
+  HOME
+  WORK
+}
+
+type PersonPhoneNumber {
+  number: String
+  type: PersonPhoneType
+}
+
+scalar GoogleProtobufTimestamp
+
+type Person {
+  name: String
+  id: Int
+  email: String
+  phones: [PersonPhoneNumber]
+  last_updated: GoogleProtobufTimestamp
+}
+
+type AddressBook {
+  people: [Person]
+}
