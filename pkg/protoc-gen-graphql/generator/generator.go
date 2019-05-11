@@ -13,13 +13,15 @@ import (
 	"strings"
 )
 
+// Generator is responsible
 type Generator struct {
-	*generator.Generator
+	*generator.Generator // github.com/golang/protobuf/protoc-gen-go/generator
 
 	qualifiedNameStack StringStack
 	qualifiedTypeMap   map[string]string // Map qualified proto3 types and names to GraphQL names
 }
 
+// New creates a new default initialized Generator.
 func New() *Generator {
 	return &Generator{
 		Generator: generator.New(),
@@ -54,12 +56,14 @@ func (g *Generator) Error(err error, msgs ...string) {
 	os.Exit(1)
 }
 
+// Fail with proper annotation
 func (g *Generator) Fail(msgs ...string) {
 	s := strings.Join(msgs, " ")
 	log.Print("protoc-gen-graphql: error:", s)
 	os.Exit(1)
 }
 
+// GenerateAllFiles generates all GraphQL schema files from the input protobuf files.
 func (g *Generator) GenerateAllFiles() {
 	g.Generator.GenerateAllFiles()
 	g.Generator.Reset()
@@ -153,6 +157,7 @@ func (g *Generator) addGraphQLType(message *descriptor.DescriptorProto) []ast.No
 				typeName = g.qualifiedTypeMap[*field.TypeName]
 			}
 		} else if field.TypeName != nil {
+			typeName, _ = g.qualifiedTypeMap[*field.TypeName]
 			if tmpTypeName, ok := g.qualifiedTypeMap[*field.TypeName]; ok {
 				typeName = tmpTypeName
 			}
